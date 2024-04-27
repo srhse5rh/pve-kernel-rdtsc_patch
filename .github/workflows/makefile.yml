@@ -51,8 +51,9 @@ jobs:
             wget https://enterprise.proxmox.com/debian/proxmox-release-${{ env.debianversion }}.gpg -O /etc/apt/trusted.gpg.d/proxmox-release-${{ env.debianversion }}.gpg
             apt update
             apt install devscripts proxmox-ve -y
-            git clone git://git.proxmox.com/git/pve-kernel.git build
             cd build
+            git clone git://git.proxmox.com/git/pve-kernel.git
+            cd pve-kernel
             git reset --hard ${{ env.commitid }}
             git submodule update --init
             #apt install dh-virtualenv dwarves libdw-dev libiberty-dev lz4
@@ -154,4 +155,4 @@ jobs:
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4.3.1
         with:
-          path: ./*.deb
+          path: pve-kernel/*.deb
