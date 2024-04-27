@@ -57,6 +57,8 @@ jobs:
             git reset --hard ${{ env.commitid }}
             git submodule update --init
             apt install dh-virtualenv dwarves libdw-dev libiberty-dev lz4 dh-python
+            echo ---installed env---
+            apt list
             mk-build-deps --install --tool "apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends -y" debian/control
             make build-dir-fresh
             
