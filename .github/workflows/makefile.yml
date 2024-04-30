@@ -62,16 +62,18 @@ jobs:
           git config --global --add safe.directory ${PWD}
           git clone git://git.proxmox.com/git/pve-kernel.git .
           git reset --hard ${{ env.commitid }}
+          git rev-parse HEAD > hash-main
+          git submodule status > hash-submodules
 
       - uses: actions/cache@v4.0.2
         with:
           path: /var/cache/apt/archives
-          key: ${{ runner.os }}-apt-${{ env.commitid }}
+          key: ${{ runner.os }}-apt-${{ hashFiles('hash-main') }}
 
       - uses: actions/cache@v4.0.2
         with:
           path: submodules
-          key: ${{ runner.os }}-submodules-${{ env.commitid }}
+          key: ${{ runner.os }}-submodules-${{ hashFiles('hash-submodules') }}
 
       - run: |
           apt update
