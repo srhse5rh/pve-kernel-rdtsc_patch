@@ -53,12 +53,12 @@ jobs:
       - uses: actions/cache@v4.0.2
         with:
           path: /var/cache/apt/archives
-          key: ${{ runner.os }}-apt-${{ hashFiles('**/debian/control') }}
+          key: ${{ runner.os }}-apt-${{ env.commitid }}
 
       - uses: actions/cache@v4.0.2
         with:
           path: submodules
-          key: ${{ runner.os }}-submodules-${{ hashFiles('.gitmodules') }}
+          key: ${{ runner.os }}-submodules-${{ env.commitid }}
 
       - run: |
           apt update
