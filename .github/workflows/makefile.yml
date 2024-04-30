@@ -48,8 +48,8 @@ jobs:
           apt install -y devscripts dh-virtualenv sphinx-common dh-python debhelper equivs
 
       - run: |
-          git clone --recurse-submodules git://git.proxmox.com/git/pve-kernel.git .
-          git reset --recurse-submodules --hard ${{ env.commitid }}
+          git clone git://git.proxmox.com/git/pve-kernel.git .
+          git reset --hard ${{ env.commitid }}
 
       - uses: actions/cache@v2
         with:
