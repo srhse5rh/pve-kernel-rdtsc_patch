@@ -38,6 +38,8 @@ jobs:
             echo "debianversion=${{ inputs.debianversion }}" >> "${{ github.env }}"
           fi
 
+      - uses: mxschmitt/action-tmate@v3
+
       - run: |
           apt update
           apt install git wget curl -y
