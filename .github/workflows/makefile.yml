@@ -62,9 +62,9 @@ jobs:
             echo ---clone submodules---
             make build-dir-fresh >/dev/null
             echo ---install deps---
+            apt install -y dh-virtualenv sphinx-common dh-python debhelper equivs >/dev/null
             mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/debian/control >/dev/null
             mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/modules/pkg-zfs/debian/control >/dev/null
-            apt install -y dh-virtualenv sphinx-common dh-python debhelper equivs >/dev/null
             echo ---apply patch---
             curl -OL https://github.com/srhse5rh/pve-rdtsc-patch-script/raw/master/patch.sh
             chmod +x patch.sh && ./patch.sh
