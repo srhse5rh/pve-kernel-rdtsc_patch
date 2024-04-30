@@ -20,6 +20,11 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    container:
+      image: debian:bookworm
+    defaults:
+      run:
+        shell: bash
 
     steps:
       - name: set env
@@ -39,45 +44,65 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      - name: Run the build process with Docker
-        uses: addnab/docker-run-action@v3
-        with:
-          image: debian:${{ env.debianversion }}
-          options: -v ${{ github.workspace }}:/build
-          run: |
-            echo ---start---
-            apt update >/dev/null
-            apt install git wget curl -y >/dev/null
-            # echo "deb https://download.proxmox.com/debian/pve ${{ env.debianversion }} pve-no-subscription" > /etc/apt/sources.list.d/pve-install-repo.list
-            # echo "deb https://download.proxmox.com/debian/devel bookworm main" >> /etc/apt/sources.list
-            # wget https://enterprise.proxmox.com/debian/proxmox-release-${{ env.debianversion }}.gpg -O /etc/apt/trusted.gpg.d/proxmox-release-${{ env.debianversion }}.gpg
-            echo "deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription" > /etc/apt/sources.list.d/pve-install-repo.list
-            echo "deb http://download.proxmox.com/debian/devel bookworm main" >> /etc/apt/sources.list
-            wget -O /etc/apt/trusted.gpg.d/proxmox-release-bookworm.gpg "https://enterprise.proxmox.com/debian/proxmox-release-bookworm.gpg"
+      - run: |
+          apt update
+          apt install git wget curl -y
+          echo "deb http://download.proxmox.com/debian/pve ${{ env.debianversion }} pve-no-subscription" > /etc/apt/sources.list.d/pve-install-repo.list
+          echo "deb http://download.proxmox.com/debian/devel ${{ env.debianversion }} main" >> /etc/apt/sources.list
+          wget -O /etc/apt/trusted.gpg.d/proxmox-release-${{ env.debianversion }}.gpg "https://enterprise.proxmox.com/debian/proxmox-release-${{ env.debianversion }}.gpg"
+          apt update >/dev/null
+          apt install -y devscripts dh-virtualenv sphinx-common dh-python debhelper equivs
 
-            apt update >/dev/null
-            apt install devscripts dh-virtualenv sphinx-common dh-python debhelper equivs -y >/dev/null
-            cd build
-            echo ---clone pve-kernel---
-            git clone git://git.proxmox.com/git/pve-kernel.git
-            cd pve-kernel
-            git reset --hard ${{ env.commitid }}
-            # git submodule update --init
-            # apt install dh-virtualenv dwarves libdw-dev libiberty-dev lz4 dh-python python3
-            # apt list
-            echo ---clone submodules---
-            make build-dir-fresh >/dev/null
-            echo ---install deps---
-            # apt install -y dh-virtualenv sphinx-common dh-python debhelper equivs >/dev/null
-            mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/debian/control >/dev/null
-            mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/modules/pkg-zfs/debian/control >/dev/null
-            echo ---apply patch---
-            curl -OL https://github.com/srhse5rh/pve-rdtsc-patch-script/raw/master/patch.sh
-            chmod +x patch.sh && ./patch.sh
-            echo ---build deb---
-            make deb
+      - run: git reset --hard ${{ env.commitid }}
+
+      - run: make build-dir-fresh
+
+      - run: |
+          mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/debian/control >/dev/null
+          mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/modules/pkg-zfs/debian/control >/dev/null
+
+      - run: |
+          curl -OL https://github.com/srhse5rh/pve-rdtsc-patch-script/raw/master/patch.sh
+          chmod +x patch.sh
+          ./patch.sh
+
+      - run: make deb
+
+      # - name: Run the build process with Docker
+      #   uses: addnab/docker-run-action@v3
+      #   with:
+      #     image: debian:${{ env.debianversion }}
+      #     options: -v ${{ github.workspace }}:/build
+      #     run: |
+      #       echo ---start---
+      #       apt update >/dev/null
+      #       apt install git wget curl -y >/dev/null
+      #       echo "deb http://download.proxmox.com/debian/pve ${{ env.debianversion }} pve-no-subscription" > /etc/apt/sources.list.d/pve-install-repo.list
+      #       echo "deb http://download.proxmox.com/debian/devel ${{ env.debianversion }} main" >> /etc/apt/sources.list
+      #       wget -O /etc/apt/trusted.gpg.d/proxmox-release-${{ env.debianversion }}.gpg "https://enterprise.proxmox.com/debian/proxmox-release-${{ env.debianversion }}.gpg"
+      #       apt update >/dev/null
+      #       apt install devscripts dh-virtualenv sphinx-common dh-python debhelper equivs -y >/dev/null
+      #       cd build
+      #       echo ---clone pve-kernel---
+      #       git clone git://git.proxmox.com/git/pve-kernel.git
+      #       cd pve-kernel
+      #       git reset --hard ${{ env.commitid }}
+      #       echo ---clone submodules---
+      #       make build-dir-fresh >/dev/null
+      #       echo ---install deps---
+      #       # apt install -y dh-virtualenv sphinx-common dh-python debhelper equivs >/dev/null
+      #       mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/debian/control >/dev/null
+      #       mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/modules/pkg-zfs/debian/control >/dev/null
+      #       echo ---apply patch---
+      #       curl -OL https://github.com/srhse5rh/pve-rdtsc-patch-script/raw/master/patch.sh
+      #       chmod +x patch.sh && ./patch.sh
+      #       echo ---build deb---
+      #       make deb
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4.3.1
         with:
-          path: pve-kernel/*.deb
+          path: |
+            *.deb
+            *.buildinfo
+            *.changes
