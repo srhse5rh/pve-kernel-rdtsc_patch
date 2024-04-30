@@ -38,13 +38,6 @@ jobs:
             echo "debianversion=${{ inputs.debianversion }}" >> "${{ github.env }}"
           fi
 
-      - uses: actions/checkout@v4
-        with:
-          repository: proxmox/pve-kernel
-          fetch-depth: 0
-          ref: ${{ env.commitid }}
-          submodules: true
-
       - run: |
           apt update
           apt install git wget curl -y
@@ -54,9 +47,13 @@ jobs:
           apt update >/dev/null
           apt install -y devscripts dh-virtualenv sphinx-common dh-python debhelper equivs
 
-      - uses: mxschmitt/action-tmate@v3
-
       # - run: git reset --hard ${{ env.commitid }}
+      - uses: actions/checkout@v4
+        with:
+          repository: proxmox/pve-kernel
+          fetch-depth: 0
+          ref: ${{ env.commitid }}
+          submodules: true
 
       - uses: actions/cache@v2
         with:
