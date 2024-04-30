@@ -42,6 +42,8 @@ jobs:
         with:
           repository: proxmox/pve-kernel
           fetch-depth: 0
+          ref: ${{ env.commitid }}
+          submodules: true
 
       - run: |
           apt update
@@ -54,7 +56,7 @@ jobs:
 
       - uses: mxschmitt/action-tmate@v3
 
-      - run: git reset --hard ${{ env.commitid }}
+      # - run: git reset --hard ${{ env.commitid }}
 
       - uses: actions/cache@v2
         with:
