@@ -50,7 +50,7 @@ jobs:
       # - run: git reset --hard ${{ env.commitid }}
       - uses: actions/checkout@v4
         with:
-          repository: proxmox/pve-kernel
+          repository: git://git.proxmox.com/git/pve-kernel.git
           fetch-depth: 0
           ref: ${{ env.commitid }}
           submodules: true
