@@ -44,16 +44,24 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      - run: |
-          apt update
-          apt install git wget curl -y
-          echo "deb http://download.proxmox.com/debian/pve ${{ env.debianversion }} pve-no-subscription" > /etc/apt/sources.list.d/pve-install-repo.list
-          echo "deb http://download.proxmox.com/debian/devel ${{ env.debianversion }} main" >> /etc/apt/sources.list
-          wget -O /etc/apt/trusted.gpg.d/proxmox-release-${{ env.debianversion }}.gpg "https://enterprise.proxmox.com/debian/proxmox-release-${{ env.debianversion }}.gpg"
-          apt update >/dev/null
-          apt install -y devscripts dh-virtualenv sphinx-common dh-python debhelper equivs
+      # - run: |
+      #     apt update
+      #     apt install git wget curl -y
+      #     echo "deb http://download.proxmox.com/debian/pve ${{ env.debianversion }} pve-no-subscription" > /etc/apt/sources.list.d/pve-install-repo.list
+      #     echo "deb http://download.proxmox.com/debian/devel ${{ env.debianversion }} main" >> /etc/apt/sources.list
+      #     wget -O /etc/apt/trusted.gpg.d/proxmox-release-${{ env.debianversion }}.gpg "https://enterprise.proxmox.com/debian/proxmox-release-${{ env.debianversion }}.gpg"
+      #     apt update >/dev/null
+      #     apt install -y devscripts dh-virtualenv sphinx-common dh-python debhelper equivs
 
-      - run: git reset --hard ${{ env.commitid }}
+      - run: |
+          ls
+          pwd
+          git reset --hard ${{ env.commitid }}
+
+      - uses: actions/cache@v2
+        with:
+          path: submodules
+          key: ${{ runner.os }}-apt-${{ hashFiles('.git/modules/submodules/*/HEAD') }}
 
       - run: make build-dir-fresh
 
