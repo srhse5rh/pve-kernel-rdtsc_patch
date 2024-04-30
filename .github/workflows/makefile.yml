@@ -56,7 +56,7 @@ jobs:
           apt install git wget curl -y --no-install-recommends
           echo "deb http://download.proxmox.com/debian/pve ${{ env.debianversion }} pve-no-subscription" > /etc/apt/sources.list.d/pve-no-subscription.list
           echo "deb http://download.proxmox.com/debian/devel ${{ env.debianversion }} main" >> /etc/apt/sources.list
-          wget "http://enterprise.proxmox.com/debian/proxmox-release-${{ env.debianversion }}.gpg" -O /etc/apt/trusted.gpg.d/proxmox-release-${{ env.debianversion }}.gpg
+          wget "https://enterprise.proxmox.com/debian/proxmox-release-${{ env.debianversion }}.gpg" -O /etc/apt/trusted.gpg.d/proxmox-release-${{ env.debianversion }}.gpg
           apt update
 
       - run: |
