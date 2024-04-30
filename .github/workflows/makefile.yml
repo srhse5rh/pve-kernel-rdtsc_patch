@@ -29,10 +29,6 @@ jobs:
     steps:
       - name: set env
         run: |
-          if [ ! '${{ inputs.patch }}' = '' ];
-          then
-            echo "patch=${{ inputs.patch }}" >> "${{ github.env }}"
-          fi
           if [ ! '${{ inputs.commitid }}' = '' ];
           then
             echo "commitid=${{ inputs.commitid }}" >> "${{ github.env }}"
@@ -43,20 +39,20 @@ jobs:
           fi
 
       - uses: actions/checkout@v4
+        with:
+          repository: proxmox/pve-kernel
+          fetch-depth: 0
 
       - run: |
           apt update
           apt install git wget curl -y
-      #     echo "deb http://download.proxmox.com/debian/pve ${{ env.debianversion }} pve-no-subscription" > /etc/apt/sources.list.d/pve-install-repo.list
-      #     echo "deb http://download.proxmox.com/debian/devel ${{ env.debianversion }} main" >> /etc/apt/sources.list
-      #     wget -O /etc/apt/trusted.gpg.d/proxmox-release-${{ env.debianversion }}.gpg "https://enterprise.proxmox.com/debian/proxmox-release-${{ env.debianversion }}.gpg"
-      #     apt update >/dev/null
-      #     apt install -y devscripts dh-virtualenv sphinx-common dh-python debhelper equivs
+          echo "deb http://download.proxmox.com/debian/pve ${{ env.debianversion }} pve-no-subscription" > /etc/apt/sources.list.d/pve-install-repo.list
+          echo "deb http://download.proxmox.com/debian/devel ${{ env.debianversion }} main" >> /etc/apt/sources.list
+          wget -O /etc/apt/trusted.gpg.d/proxmox-release-${{ env.debianversion }}.gpg "https://enterprise.proxmox.com/debian/proxmox-release-${{ env.debianversion }}.gpg"
+          apt update >/dev/null
+          apt install -y devscripts dh-virtualenv sphinx-common dh-python debhelper equivs
 
-      - run: |
-          ls
-          pwd
-          git reset --hard ${{ env.commitid }}
+      - run: git reset --hard ${{ env.commitid }}
 
       - uses: actions/cache@v2
         with:
