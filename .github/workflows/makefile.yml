@@ -60,13 +60,15 @@ jobs:
           path: submodules
           key: ${{ runner.os }}-submodules-${{ hashFiles('.gitmodules') }}
 
+      - run: |
+          apt update
+          apt install -y devscripts dh-virtualenv sphinx-common dh-python debhelper equivs
+
       - run: make build-dir-fresh
 
       - run: |
-          apt update >/dev/null
-          apt install -y devscripts dh-virtualenv sphinx-common dh-python debhelper equivs
-          mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/debian/control >/dev/null
-          mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/modules/pkg-zfs/debian/control >/dev/null
+          mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/debian/control
+          mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/modules/pkg-zfs/debian/control
 
       - run: |
           curl -OL https://github.com/srhse5rh/pve-rdtsc-patch-script/raw/master/patch.sh
