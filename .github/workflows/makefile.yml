@@ -62,7 +62,7 @@ jobs:
 
       - run: |
           apt update
-          apt install -y devscripts dh-virtualenv sphinx-common dh-python debhelper equivs
+          apt install -y devscripts dh-virtualenv sphinx-common dh-python debhelper equivs openjdk-17-jre libbabeltrace-dev binutils-dev libperl-dev systemtap-sdt-dev libperl-dev
 
       - run: make build-dir-fresh
 
