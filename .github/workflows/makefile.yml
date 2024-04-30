@@ -56,7 +56,7 @@ jobs:
             wget -O /etc/apt/trusted.gpg.d/proxmox-release-bookworm.gpg "https://enterprise.proxmox.com/debian/proxmox-release-bookworm.gpg"
 
             apt update >/dev/null
-            apt install devscripts -y >/dev/null
+            apt install devscripts dh-virtualenv sphinx-common dh-python debhelper equivs -y >/dev/null
             cd build
             echo ---clone pve-kernel---
             git clone git://git.proxmox.com/git/pve-kernel.git
@@ -68,7 +68,7 @@ jobs:
             echo ---clone submodules---
             make build-dir-fresh >/dev/null
             echo ---install deps---
-            apt install -y dh-virtualenv sphinx-common dh-python debhelper equivs >/dev/null
+            # apt install -y dh-virtualenv sphinx-common dh-python debhelper equivs >/dev/null
             mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/debian/control >/dev/null
             mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/modules/pkg-zfs/debian/control >/dev/null
             echo ---apply patch---
