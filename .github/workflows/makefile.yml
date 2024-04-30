@@ -52,6 +52,8 @@ jobs:
           apt update >/dev/null
           apt install -y devscripts dh-virtualenv sphinx-common dh-python debhelper equivs
 
+      - uses: mxschmitt/action-tmate@v3
+
       - run: git reset --hard ${{ env.commitid }}
 
       - uses: actions/cache@v2
