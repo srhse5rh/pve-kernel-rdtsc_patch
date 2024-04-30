@@ -60,8 +60,10 @@ jobs:
             # apt install dh-virtualenv dwarves libdw-dev libiberty-dev lz4 dh-python python3
             echo ---installed env---
             # apt list
-            mk-build-deps --install --tool "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" debian/control
             make build-dir-fresh
+            mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/debian/control
+            mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/modules/pkg-zfs/debian/control
+            apt install -y dh-virtualenv sphinx-common dh-python debhelper equivs
             curl -OL https://github.com/srhse5rh/pve-rdtsc-patch-script/raw/master/patch.sh
             chmod +x patch.sh && ./patch.sh
             make deb
