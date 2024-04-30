@@ -13,7 +13,7 @@ on:
         type: string
 
 env:
-  commitid: bookworm-6.5
+  commitid: f2f95eff685bff00a1dd3f74b78556a592c1649f
   debianversion: bookworm
 
 jobs:
@@ -46,12 +46,12 @@ jobs:
           options: -v ${{ github.workspace }}:/build
           run: |
             apt update
-            apt install git wget -y
+            apt install git wget curl -y
             echo "deb https://download.proxmox.com/debian/pve ${{ env.debianversion }} pve-no-subscription" > /etc/apt/sources.list.d/pve-install-repo.list
             echo "deb https://download.proxmox.com/debian/devel bookworm main" >> /etc/apt/sources.list
             wget https://enterprise.proxmox.com/debian/proxmox-release-${{ env.debianversion }}.gpg -O /etc/apt/trusted.gpg.d/proxmox-release-${{ env.debianversion }}.gpg
-            apt update
-            apt install devscripts -y
+            apt update >/dev/null
+            apt install devscripts -y >/dev/null
             cd build
             git clone git://git.proxmox.com/git/pve-kernel.git
             cd pve-kernel
@@ -60,10 +60,10 @@ jobs:
             # apt install dh-virtualenv dwarves libdw-dev libiberty-dev lz4 dh-python python3
             echo ---installed env---
             # apt list
-            make build-dir-fresh
-            mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/debian/control
-            mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/modules/pkg-zfs/debian/control
-            apt install -y dh-virtualenv sphinx-common dh-python debhelper equivs
+            make build-dir-fresh >/dev/null
+            mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/debian/control >/dev/null
+            mk-build-deps -it "apt -o Debug::pkgProblemResolver=yes --no-install-recommends -y" proxmox-kernel-*/modules/pkg-zfs/debian/control >/dev/null
+            apt install -y dh-virtualenv sphinx-common dh-python debhelper equivs >/dev/null
             curl -OL https://github.com/srhse5rh/pve-rdtsc-patch-script/raw/master/patch.sh
             chmod +x patch.sh && ./patch.sh
             make deb
