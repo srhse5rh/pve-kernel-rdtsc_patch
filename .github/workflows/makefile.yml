@@ -69,12 +69,12 @@ jobs:
       - uses: actions/cache@v4.0.2
         with:
           path: /var/cache/apt/archives
-          key: ${{ runner.os }}-apt-${{ hashFiles('hash-main') }}
+          key: apt-${{ hashFiles('hash-main') }}
 
       - uses: actions/cache@v4.0.2
         with:
           path: submodules
-          key: ${{ runner.os }}-submodules-${{ hashFiles('hash-submodules') }}
+          key: submodules-${{ hashFiles('hash-submodules') }}
 
       - run: apt install -y --no-install-recommends devscripts dh-virtualenv sphinx-common dh-python debhelper equivs openjdk-17-jre libbabeltrace-dev binutils-dev libperl-dev systemtap-sdt-dev libperl-dev
 
