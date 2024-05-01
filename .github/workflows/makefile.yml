@@ -76,7 +76,7 @@ jobs:
           chmod +x patch.sh
           ./patch.sh
 
-      - run: make deb
+      # - run: make deb
 
       # - name: Run the build process with Docker
       #   uses: addnab/docker-run-action@v3
