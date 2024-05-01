@@ -34,6 +34,17 @@ jobs:
             echo "commitid=${{ inputs.commitid }}" >> "${{ github.env }}"
           fi
 
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 10240
+          swap-size-mb: 8192
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-docker-images: 'true'
+
       - run: |
           apt update
           apt install git wget curl -y
