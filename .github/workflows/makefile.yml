@@ -21,7 +21,7 @@ jobs:
 
     runs-on: ubuntu-latest
     container:
-      image: debian:bookworm
+      image: debian:${{ env.debianversion }}
     defaults:
       run:
         shell: bash
@@ -55,11 +55,6 @@ jobs:
 
       - uses: actions/cache@v4.0.2
         with:
-          path: /var/cache/apt/archives
-          key: apt-${{ hashFiles('hash-main') }}
-
-      - uses: actions/cache@v4.0.2
-        with:
           path: submodules
           key: submodules-${{ hashFiles('hash-submodules') }}
 
@@ -76,7 +71,7 @@ jobs:
           chmod +x patch.sh
           ./patch.sh
 
-      # - run: make deb
+      - run: make deb
 
       # - name: Run the build process with Docker
       #   uses: addnab/docker-run-action@v3
