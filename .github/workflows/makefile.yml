@@ -54,6 +54,8 @@ jobs:
           sudo apt update
 
       - run: |
+          ls -A
+          pwd
           git config --global --add safe.directory ${PWD}
           git clone git://git.proxmox.com/git/pve-kernel.git .
           git reset --hard ${{ env.commitid }}
