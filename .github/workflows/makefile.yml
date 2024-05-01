@@ -54,6 +54,7 @@ jobs:
           sudo apt update
 
       - run: |
+          git config --global --add safe.directory '*'
           git clone git://git.proxmox.com/git/pve-kernel.git
           cd pve-kernel
           mv $(ls -A) ..
